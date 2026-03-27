@@ -63,19 +63,14 @@ app.post("/create-order", async (req, res) => {
     const { amount, uid, mobile } = req.body;
 
     const response = await axios.post(
-      "https://tranzupi.com/api/create-order",
-      {
-        customer_mobile: mobile,
-        user_token: uid,
-        amount: amount
-      },
-      {
-        headers: {
-   Authorization: `Bearer ${process.env.TRANZUPI_API_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+  "https://tranzupi.com/api/create-order",
+  {
+    api_key: process.env.TRANZUPI_API_KEY,
+    customer_mobile: mobile,
+    user_token: uid,
+    amount: amount
+  }
+);
 
     res.json(response.data);
 
