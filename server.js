@@ -1,20 +1,14 @@
-require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-const db = require("./firebase");
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.post("/neoupi-webhook", async (req, res) => {
+app.post("/tranzupi-webhook", async (req, res) => {
   try {
 
     const data = req.body;
 
-    console.log("Webhook received:", data);
+    console.log("TranzUPI webhook received:", data);
+
+    // Example expected structure:
+    // data.status
+    // data.userId
+    // data.amount
 
     if (data.status !== "SUCCESS") {
       return res.sendStatus(200);
@@ -49,14 +43,4 @@ app.post("/neoupi-webhook", async (req, res) => {
     res.sendStatus(500);
 
   }
-});
-
-app.get("/", (req, res) => {
-  res.send("NeoUPI Webhook Server Running");
-});
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
