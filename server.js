@@ -60,6 +60,8 @@ app.post("/webhook", async (req, res) => {
 app.post("/create-order", async (req, res) => {
   try {
 
+    console.log("Incoming request body:", req.body);
+    
     const { amount, uid, mobile } = req.body;
 
     const response = await axios.post(
