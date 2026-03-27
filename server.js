@@ -71,7 +71,7 @@ app.post("/create-order", async (req, res) => {
       },
       {
         headers: {
-          Authorization: process.env.TRANZUPI_API_KEY,
+   Authorization: `Bearer ${process.env.TRANZUPI_API_KEY}`,
           "Content-Type": "application/json"
         }
       }
