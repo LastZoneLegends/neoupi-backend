@@ -1,3 +1,15 @@
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
+const db = require("./firebase");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
 app.post("/webhook", async (req, res) => {
   try {
 
@@ -14,7 +26,7 @@ app.post("/webhook", async (req, res) => {
       return res.sendStatus(200);
     }
 
-    const uid = data.userId;
+    const uid = data.user_token;
     const amount = Number(data.amount);
 
     const userRef = db.collection("users").doc(uid);
@@ -43,4 +55,47 @@ app.post("/webhook", async (req, res) => {
     res.sendStatus(500);
 
   }
+});
+
+app.post("/create-order", async (req, res) => {
+  try {
+
+    const { amount, uid, mobile } = req.body;
+
+    const response = await axios.post(
+      "https://tranzupi.com/api/create-order",
+      {
+        customer_mobile: mobile,
+        user_token: uid,
+        amount: amount
+      },
+      {
+        headers: {
+          Authorization: process.env.TRANZUPI_API_KEY,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    res.json(response.data);
+
+  } catch (error) {
+
+    console.log(error.response?.data || error.message);
+
+    res.status(500).json({
+      message: "Create order failed"
+    });
+
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("TranzUPI Webhook Server Running");
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
