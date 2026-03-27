@@ -60,36 +60,44 @@ app.post("/webhook", async (req, res) => {
 app.post("/create-order", async (req, res) => {
   try {
 
-    console.log("Incoming request body:", req.body);
-    
     const { amount, uid, mobile } = req.body;
 
-    const response = await axios.post(
-  "https://tranzupi.com/api/create-order",
-  {
-    customer_mobile: mobile,
-    user_token: uid,
-    amount: amount.toString(),
-    order_id: Date.now().toString(),
-    redirect_url: "https://lastzone.netlify.app/wallet",
-    remark1: "Wallet Deposit",
-    remark2: "LastZoneUser"
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${process.env.TRANZUPI_API_KEY}`,
-      "Content-Type": "application/json"
+    console.log("Incoming request body:", req.body);
+
+    if (!amount || !uid || !mobile) {
+      return res.json({
+        status: false,
+        message: "Missing required parameters."
+      });
     }
-  }
-);
+
+    const response = await axios.post(
+      "https://tranzupi.com/api/create-order",
+      {
+        customer_mobile: mobile,
+        user_token: uid,
+        amount: amount.toString(),
+        order_id: Date.now().toString(),
+        redirect_url: "https://lastzone.netlify.app/wallet",
+        remark1: "Wallet Deposit",
+        remark2: "LastZoneUser"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.TRANZUPI_API_KEY}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
     res.json(response.data);
 
   } catch (error) {
 
-    console.log(error.response?.data || error.message);
+    console.log("TranzUPI ERROR:", error.response?.data || error.message);
 
-    res.status(500).json({
+    res.json({
+      status: false,
       message: "Create order failed"
     });
 
