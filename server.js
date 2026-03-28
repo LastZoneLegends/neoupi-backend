@@ -21,24 +21,21 @@ app.post("/webhook", async (req, res) => {
 
     console.log("TranzUPI webhook received:", data);
 
-    // Example expected structure:
-    // data.status
-    // data.userId
-    // data.amount
-
     if (!data.txn_remark) {
-  return res.sendStatus(200);
+      return res.sendStatus(200);
     }
 
-    const uid = data.user_token;
-    const amount = Number(data.amount);
+    const uid = data.remark1;
+    const amount = parseFloat(data.amount || 0);
+
+    console.log("Updating wallet for UID:", uid);
 
     const userRef = db.collection("users").doc(uid);
 
     const doc = await userRef.get();
 
     if (!doc.exists) {
-      console.log("User not found");
+      console.log("User not found:", uid);
       return res.sendStatus(404);
     }
 
@@ -48,13 +45,13 @@ app.post("/webhook", async (req, res) => {
       wallet: currentBalance + amount,
     });
 
-    console.log("Wallet updated successfully");
+    console.log("Wallet updated successfully:", amount);
 
     res.sendStatus(200);
 
   } catch (error) {
 
-    console.log(error);
+    console.log("Webhook error:", error);
 
     res.sendStatus(500);
 
