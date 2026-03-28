@@ -49,12 +49,17 @@ await userRef.update({
 
     // ✅ transaction history entry
     await db.collection("transactions").add({
-      uid,
-      amount,
-      type: "deposit",
-      status: "success",
-      createdAt: new Date(),
-    });
+  amount,
+  description: `Deposit Approved - UTR: ${data.txn_remark}`,
+  referenceId: data.order_id,
+  status: "completed",
+  type: "deposit",
+  updatedAt: new Date(),
+  userEmail: doc.data().email,
+  userId: uid,
+  userName: doc.data().displayName || "User",
+  paymentGateway: "TranzUPI"
+});
 
     console.log("Wallet updated successfully:", amount);
 
