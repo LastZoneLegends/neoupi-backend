@@ -48,7 +48,9 @@ await userRef.update({
 });
 
     // ✅ transaction history entry
-    await db.collection("transactions").add({
+    console.log("Saving transaction entry...");
+
+await db.collection("transactions").add({
   amount,
   description: `Deposit Approved - UTR: ${data.txn_remark}`,
   referenceId: data.order_id,
@@ -57,9 +59,10 @@ await userRef.update({
   updatedAt: new Date(),
   userEmail: doc.data().email,
   userId: uid,
-  userName: doc.data().displayName || "User",
-  paymentGateway: "TranzUPI"
+  userName: doc.data().displayName || "User"
 });
+
+    console.log("Transaction saved successfully");
 
     console.log("Wallet updated successfully:", amount);
 
