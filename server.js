@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const qs = require("qs");
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
@@ -73,20 +74,22 @@ app.post("/create-order", async (req, res) => {
       });
     }
 
-    const response = await axios.post(
+    const qs = require("qs");
+
+const response = await axios.post(
   "https://tranzupi.com/api/create-order",
-  {
+  qs.stringify({
     customer_mobile: mobile,
     user_token: process.env.TRANZUPI_API_KEY,
     amount: Number(amount).toFixed(2),
-    order_id: "LZL_" + Date.now(),
+    order_id: "LZL" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/",
     remark1: uid,
     remark2: "wallet"
-  },
+  }),
   {
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/x-www-form-urlencoded"
     }
   }
 );
