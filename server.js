@@ -78,7 +78,7 @@ app.post("/create-order", async (req, res) => {
   {
     customer_mobile: mobile,
     user_token: process.env.TRANZUPI_API_KEY,
-    amount: amount.toString(),
+    amount: Number(amount).toFixed(2),
     order_id: Date.now().toString(),
     redirect_url: "https://lastzone.netlify.app/wallet",
     remark1: "Wallet Deposit",
