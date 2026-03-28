@@ -50,16 +50,17 @@ await userRef.update({
     // ✅ transaction history entry
     console.log("Saving transaction entry...");
 
-await db.collection("transactions").add({
+    await db.collection("transactions").add({
   amount,
   description: `Deposit Approved - UTR: ${data.txn_remark}`,
   referenceId: data.order_id,
   status: "completed",
   type: "deposit",
-  updatedAt: new Date(),
+  createdAt: new Date(),
   userEmail: doc.data().email,
-  userId: uid,
-  userName: doc.data().displayName || "User"
+  uid: uid,
+  userName: doc.data().displayName || "User",
+  source: "TranzUpi"
 });
 
     console.log("Transaction saved successfully");
