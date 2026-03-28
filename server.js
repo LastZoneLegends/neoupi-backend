@@ -26,8 +26,8 @@ app.post("/webhook", async (req, res) => {
     // data.userId
     // data.amount
 
-    if (data.status !== "SUCCESS") {
-      return res.sendStatus(200);
+    if (!data.txn_remark) {
+  return res.sendStatus(200);
     }
 
     const uid = data.user_token;
@@ -86,7 +86,7 @@ const response = await axios.post(
     order_id: "LZL" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/",
     remark1: uid,
-    remark2: "wallet"
+    remark2: currentUser.email
   }),
   {
     headers: {
