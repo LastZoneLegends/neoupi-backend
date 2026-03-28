@@ -39,10 +39,21 @@ app.post("/webhook", async (req, res) => {
       return res.sendStatus(404);
     }
 
-    const currentBalance = doc.data().wallet || 0;
+    const depositedBalance = doc.data().depositedBalance || 0;
+const walletBalance = doc.data().walletBalance || 0;
 
-    await userRef.update({
-      wallet: currentBalance + amount,
+await userRef.update({
+  depositedBalance: depositedBalance + amount,
+  walletBalance: walletBalance + amount,
+});
+
+    // ✅ transaction history entry
+    await db.collection("transactions").add({
+      uid,
+      amount,
+      type: "deposit",
+      status: "success",
+      createdAt: new Date(),
     });
 
     console.log("Wallet updated successfully:", amount);
