@@ -62,16 +62,16 @@ if (!existingTxn.empty) {
     console.log("Saving transaction entry...");
 
     await db.collection("transactions").add({
+  userId: uid,
+  userName: doc.data().displayName || "User",
+  userEmail: doc.data().email,
   amount,
+  type: "deposit",
   description: `Deposit Approved - UTR: ${data.txn_remark}`,
   referenceId: data.order_id,
-  status: "success",
-  type: "deposit",
-  createdAt: new Date(),
-  userEmail: doc.data().email,
-  uid: uid,
-  userName: doc.data().displayName || "User",
-  source: "TranzUpi"
+  status: "Success",
+  source: "TranzUpi",
+  createdAt: admin.firestore.FieldValue.serverTimestamp()
 });
 
     console.log("Transaction saved successfully");
