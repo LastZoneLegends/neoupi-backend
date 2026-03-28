@@ -12,6 +12,7 @@ console.log("API KEY:", process.env.TRANZUPI_API_KEY);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.post("/webhook", async (req, res) => {
   try {
