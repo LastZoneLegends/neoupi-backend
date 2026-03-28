@@ -72,17 +72,17 @@ app.post("/create-order", async (req, res) => {
     }
 
     const response = await axios.post(
-      "https://tranzupi.com/api/create-order",
-      {
-        customer_mobile: mobile,
-        user_token: process.env.TRANZUPI_API_KEY,
-        amount: amount.toString(),
-        order_id: Date.now().toString(),
-        redirect_url: "https://lastzone.netlify.app/wallet",
-        remark1: "Wallet Deposit",
-        remark2: "LastZoneUser"
-      }
-    );
+  "https://tranzupi.com/api/create-order",
+  {
+    customer_mobile: mobile,
+    user_token: process.env.TRANZUPI_API_KEY,
+    amount: amount.toString(),
+    order_id: Date.now().toString(),
+    redirect_url: "https://lastzone.netlify.app/wallet",
+    remark1: "Wallet Deposit",
+    remark2: "LastZoneUser"
+  }
+);
 
     res.json(response.data);
 
