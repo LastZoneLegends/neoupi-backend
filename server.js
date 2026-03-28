@@ -79,7 +79,7 @@ app.post("/create-order", async (req, res) => {
     customer_mobile: mobile,
     user_token: process.env.TRANZUPI_API_KEY,
     amount: Number(amount).toFixed(2),
-    order_id: order_id: "LZL_" + Date.now(),
+    order_id: "LZL_" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/",
     remark1: "uid",
     remark2: "LastZoneLegends"
