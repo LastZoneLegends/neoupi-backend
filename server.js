@@ -7,6 +7,8 @@ const db = require("./firebase");
 
 const app = express();
 
+console.log("API KEY:", process.env.TRANZUPI_API_KEY);
+
 app.use(cors());
 app.use(express.json());
 
