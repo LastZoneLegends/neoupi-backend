@@ -81,8 +81,13 @@ app.post("/create-order", async (req, res) => {
     amount: Number(amount).toFixed(2),
     order_id: "LZL_" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/",
-    remark1: "uid",
-    remark2: "LastZoneLegends"
+    remark1: uid,
+    remark2: "wallet"
+  },
+  {
+    headers: {
+      "Content-Type": "application/json"
+    }
   }
 );
 
