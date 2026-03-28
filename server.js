@@ -86,7 +86,7 @@ const response = await axios.post(
     order_id: "LZL" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/",
     remark1: uid,
-    remark2: currentUser.email
+    remark2: "Wallet"
   }),
   {
     headers: {
