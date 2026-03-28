@@ -47,6 +47,17 @@ await userRef.update({
   walletBalance: walletBalance + amount,
 });
 
+    // duplicate check
+const existingTxn = await db
+  .collection("transactions")
+  .where("referenceId", "==", data.order_id)
+  .get();
+
+if (!existingTxn.empty) {
+  console.log("Transaction already exists, skipping duplicate");
+  return res.sendStatus(200);
+}
+
     // ✅ transaction history entry
     console.log("Saving transaction entry...");
 
@@ -54,7 +65,7 @@ await userRef.update({
   amount,
   description: `Deposit Approved - UTR: ${data.txn_remark}`,
   referenceId: data.order_id,
-  status: "completed",
+  status: "success",
   type: "deposit",
   createdAt: new Date(),
   userEmail: doc.data().email,
