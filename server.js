@@ -90,7 +90,9 @@ if (!existingTxn.empty) {
   }
 });
 
-app.post("/create-order", async (req, res) => {
+
+  app.post("/create-order", async (req, res) => {
+
   try {
 
     const { amount, uid, mobile } = req.body;
@@ -98,46 +100,50 @@ app.post("/create-order", async (req, res) => {
     console.log("Incoming request body:", req.body);
 
     if (!amount || !uid || !mobile) {
+
       return res.json({
         status: false,
         message: "Missing required parameters."
       });
+
     }
 
-    // Firestore se minimum deposit fetch karo
-const settingsRef = db.collection("app_settings").doc("main");
+    const settingsDoc = await db
+      .collection("app_settings")
+      .doc("main")
+      .get();
 
-const settingsDoc = await settingsRef.get();
+    if (!settingsDoc.exists) {
 
-const minDeposit = settingsDoc.data()?.minDeposit || 10;
+      return res.json({
+        status: false,
+        message: "App settings not found"
+      });
 
-// validation
-if (Number(amount) < minDeposit) {
+    }
 
-  return res.json({
-    status: false,
-    message: `Minimum deposit amount is ₹${minDeposit}`
-  });
+    const minDeposit = settingsDoc.data().minDeposit || 10;
 
-}
+    if (Number(amount) < minDeposit) {
 
-  const settingsDoc = await db.collection("app_settings").doc("main").get();
+      return res.json({
+        status: false,
+        message: `Minimum deposit amount is ₹${minDeposit}`
+      });
 
-if (!settingsDoc.exists) {
-  return res.json({
-    status: false,
-    message: "App settings not found"
-  });
-}
+    }
 
-const tranzupiApiKey = settingsDoc.data().tranzupiApiKey;
+    const tranzupiApiKey = settingsDoc.data().tranzupiApiKey;
 
-if (!tranzupiApiKey) {
-  return res.json({
-    status: false,
-    message: "TranzUPI API key missing in settings"
-  });
-}
+    if (!tranzupiApiKey) {
+
+      return res.json({
+        status: false,
+        message: "TranzUPI API key missing in settings"
+      });
+
+    }
+
     
     const qs = require("qs");
 
