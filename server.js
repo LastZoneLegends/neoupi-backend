@@ -154,7 +154,7 @@ const response = await axios.post(
     user_token: tranzupiApiKey,
     amount: Number(amount).toFixed(2),
     order_id: "LZL" + Date.now(),
-    redirect_url: "https://lastzone.netlify.app/wallet",
+    redirect_url: "https://lastzonelegends.com/wallet",
     remark1: uid,
     remark2: "Wallet"
   }),
