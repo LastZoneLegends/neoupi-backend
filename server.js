@@ -121,13 +121,31 @@ if (Number(amount) < minDeposit) {
 
 }
 
+  const settingsDoc = await db.collection("app_settings").doc("main").get();
+
+if (!settingsDoc.exists) {
+  return res.json({
+    status: false,
+    message: "App settings not found"
+  });
+}
+
+const tranzupiApiKey = settingsDoc.data().tranzupiApiKey;
+
+if (!tranzupiApiKey) {
+  return res.json({
+    status: false,
+    message: "TranzUPI API key missing in settings"
+  });
+}
+    
     const qs = require("qs");
 
 const response = await axios.post(
   "https://tranzupi.com/api/create-order",
   qs.stringify({
     customer_mobile: mobile,
-    user_token: process.env.TRANZUPI_API_KEY,
+    user_token: tranzupiApiKey,
     amount: Number(amount).toFixed(2),
     order_id: "LZL" + Date.now(),
     redirect_url: "https://lastzone.netlify.app/wallet",
