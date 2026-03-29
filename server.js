@@ -104,6 +104,23 @@ app.post("/create-order", async (req, res) => {
       });
     }
 
+    // Firestore se minimum deposit fetch karo
+const settingsRef = db.collection("app_settings").doc("main");
+
+const settingsDoc = await settingsRef.get();
+
+const minDeposit = settingsDoc.data()?.minDeposit || 10;
+
+// validation
+if (Number(amount) < minDeposit) {
+
+  return res.json({
+    status: false,
+    message: `Minimum deposit amount is ₹${minDeposit}`
+  });
+
+}
+
     const qs = require("qs");
 
 const response = await axios.post(
@@ -113,7 +130,7 @@ const response = await axios.post(
     user_token: process.env.TRANZUPI_API_KEY,
     amount: Number(amount).toFixed(2),
     order_id: "LZL" + Date.now(),
-    redirect_url: "https://lastzone.netlify.app/",
+    redirect_url: "https://lastzone.netlify.app/wallet",
     remark1: uid,
     remark2: "Wallet"
   }),
