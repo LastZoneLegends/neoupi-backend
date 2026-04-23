@@ -210,6 +210,33 @@ app.get("/sync-total-deposits", async (req, res) => {
   }
 });
 
+// 🔧 One-time migration: Sync totalDeposited for existing users
+app.get("/sync-total-deposits", async (req, res) => {
+  try {
+    const usersSnapshot = await db.collection("users").get();
+
+    let updatedCount = 0;
+
+    for (const doc of usersSnapshot.docs) {
+      const data = doc.data();
+
+      // Only update if totalDeposited missing or zero
+      if (!data.totalDeposited && data.depositedBalance) {
+        await db.collection("users").doc(doc.id).update({
+          totalDeposited: data.depositedBalance,
+        });
+
+        updatedCount++;
+      }
+    }
+
+    res.send(`✅ Migration complete. Updated ${updatedCount} users.`);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Migration failed.");
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
