@@ -46,6 +46,7 @@ const walletBalance = doc.data().walletBalance || 0;
 await userRef.update({
   depositedBalance: depositedBalance + amount,
   walletBalance: walletBalance + amount,
+  totalDeposited: (doc.data().totalDeposited || 0) + amount
 });
 
     // duplicate check
