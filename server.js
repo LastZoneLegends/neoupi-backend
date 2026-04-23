@@ -196,13 +196,22 @@ const userId = userDoc.id;
 const transactionsSnapshot = await db
 .collection("transactions")
 .where("userId", "==", userId)
-.where("type", "==", "deposit")
 .get();
 
 let totalDeposited = 0;
 
 transactionsSnapshot.forEach(doc => {
-totalDeposited += doc.data().amount || 0;
+
+const txn = doc.data();
+
+if (
+txn.type === "deposit" ||
+txn.type === "refund" ||
+txn.type === "admin_credit"
+) {
+totalDeposited += txn.amount || 0;
+}
+
 });
 
 await db.collection("users").doc(userId).update({
