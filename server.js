@@ -184,31 +184,42 @@ app.get("/", (req, res) => {
   res.send("TranzUPI Webhook Server Running");
 });
 
-// 🔧 One-time migration: Sync totalDeposited for existing users
 app.get("/sync-total-deposits", async (req, res) => {
-  try {
-    const usersSnapshot = await db.collection("users").get();
+try {
 
-    let updatedCount = 0;
+const usersSnapshot = await db.collection("users").get();
 
-    for (const doc of usersSnapshot.docs) {
-      const data = doc.data();
+for (const userDoc of usersSnapshot.docs) {
 
-      // Only update if totalDeposited missing or zero
-      if (!data.totalDeposited && data.depositedBalance) {
-        await db.collection("users").doc(doc.id).update({
-          totalDeposited: data.depositedBalance,
-        });
+const userId = userDoc.id;
 
-        updatedCount++;
-      }
-    }
+const transactionsSnapshot = await db
+.collection("transactions")
+.where("userId", "==", userId)
+.where("type", "==", "deposit")
+.get();
 
-    res.send(`✅ Migration complete. Updated ${updatedCount} users.`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Migration failed.");
-  }
+let totalDeposited = 0;
+
+transactionsSnapshot.forEach(doc => {
+totalDeposited += doc.data().amount || 0;
+});
+
+await db.collection("users").doc(userId).update({
+totalDeposited
+});
+
+}
+
+res.send("All users totalDeposited synced successfully");
+
+} catch (error) {
+
+console.error(error);
+
+res.status(500).send("Migration failed");
+
+}
 });
 
 const PORT = process.env.PORT || 5000;
